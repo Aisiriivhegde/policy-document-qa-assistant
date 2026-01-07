@@ -3,19 +3,11 @@ from PyPDF2 import PdfReader
 from groq import Groq
 from flask import Flask, request, jsonify
 
-# -----------------------------
 # Load Groq API Key
-# -----------------------------
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
-# -----------------------------
 # Flask App
-# -----------------------------
 app = Flask(__name__)
-
-# -----------------------------
 # Extract text from PDF
-# -----------------------------
 def extract_policy_text(pdf_path):
     reader = PdfReader(pdf_path)
     text = ""
@@ -25,14 +17,9 @@ def extract_policy_text(pdf_path):
         text += page_text
     return text
 
-
-
-# Load policy document once
 POLICY_TEXT = extract_policy_text("policy_docs/sample_policy.pdf")
 
-# -----------------------------
 # Ask Groq (Llama 3.1)
-# -----------------------------
 def ask_model(question, policy_text):
     system_prompt = """
 You are an insurance policy assistant.
@@ -60,10 +47,7 @@ QUESTION:
 
     return completion.choices[0].message.content
 
-
-# -----------------------------
 # API Endpoint
-# -----------------------------
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.json or {}
@@ -82,8 +66,7 @@ def home():
     <p>Test with PowerShell: Invoke-RestMethod -Uri "http://127.0.0.1:5000/ask" -Method Post -ContentType "application/json" -Body '{"question":"waiting period"}'</p>
     """
 
-# -----------------------------
 # Run App
-# -----------------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
